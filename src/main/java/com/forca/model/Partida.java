@@ -4,16 +4,15 @@ package com.forca.model;
 import java.util.HashSet;
 import java.util.Set;
 
-import lombok.Getter;
+import lombok.Data;
 
+@Data
 public class Partida {
 
     private final Palavra palavra;
     private final Set<Character> letrasChutadas = new HashSet<>();
-    @Getter
     private int erros;
     private final int limiteErros;
-    @Getter
     private EstadoJogo estado;
 
     public Partida(Palavra palavra, int limiteErros) {
@@ -30,16 +29,12 @@ public class Partida {
         return palavra.revelar(letrasChutadas);
     }
 
-    /**
-     * Processa um chute de letra.
-     * @param letra a letra chutada pelo jogador
-     */
-    public void chutarLetra(char letra) {
+    public boolean chutarLetra(char letra) {
         letra = Character.toLowerCase(letra);
 
         // Ignora se já chutou
         if (letrasChutadas.contains(letra) || estado != EstadoJogo.JOGANDO) {
-            return;
+            return false;
         }
 
         letrasChutadas.add(letra);
@@ -52,6 +47,7 @@ public class Partida {
         } else if (todasLetrasReveladas()) {
             estado = EstadoJogo.GANHOU;
         }
+        return false;
     }
 
     private boolean todasLetrasReveladas() {
